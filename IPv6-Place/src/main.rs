@@ -1,6 +1,9 @@
+#![allow(non_snake_case)]
+
 use tungstenite::{connect, Message};
 use url::Url;
-fn main() {
+
+fn ws_test() {
     env_logger::init();
 
     let (mut socket, response) =
@@ -19,4 +22,9 @@ fn main() {
         println!("Received: {}", msg);
     }
     // socket.close(None);
+}
+
+fn main() {
+    //ws_test();
+    println!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n>> :");
 }
