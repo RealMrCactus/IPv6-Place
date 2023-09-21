@@ -9,7 +9,7 @@
 - [License](#license)
 
 ## Introduction
-This is a cool markdown page that I created using GitHub Copilot. It's a great way to showcase your project or share information with others.
+IPv6-Place is a tool created by me for use of writing images to this [website](https://ssi.place/timr/)
 
 ## Features
 - Easy to read and write

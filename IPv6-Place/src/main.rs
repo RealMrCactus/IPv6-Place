@@ -1,30 +1,37 @@
 #![allow(non_snake_case)]
+use std::net::Ipv6Addr;
 
-use tungstenite::{connect, Message};
-use url::Url;
+use image;
+use image::GenericImageView;
+use socket2::{Socket, Domain, Type, Protocol};
+use std::net::{SocketAddrV6};
 
-fn ws_test() {
-    env_logger::init();
 
-    let (mut socket, response) =
-        connect(Url::parse("wss://ssi.place/ws").unwrap()).expect("Can't connect");
+//const WS: &str    = "wss://ssi.place/ws";
+//let image: &str = "out.jpg";
 
-    println!("Connected to the server");
-    println!("Response HTTP code: {}", response.status());
-    println!("Response contains the following headers:");
-    for (ref header, _value) in response.headers() {
-        println!("* {}", header);
-    }
-
-    socket.send(Message::Text("Hello WebSocket".into())).unwrap();
+fn process_image(image: &str) {
+    let image = image::open("src/out.jpg").unwrap();
+    
+    let socket = Socket::new(Domain::IPV6, Type::RAW, Some(Protocol::ICMPV6)).unwrap();
+    let payload = [0; 8];
     loop {
-        let msg = socket.read().expect("Error reading message");
-        println!("Received: {}", msg);
+        for (x, y, color) in image.pixels() {
+            // ping format (hex): x, y, r, g, b 2a01:4f8:c012:f8e6:SXXX:YYYY:RR:GGBB s will default to 1
+            let ip = Ipv6Addr::new(
+                0x2a01, 0x4f8, 0xc012, 0xf8e6, 
+                (0x2 << 12) | x as u16, y as u16,
+                color[0] as u16, ((color[1] as u16) << 8) | color[2] as u16
+            );
+            let addr = SocketAddrV6::new(ip, 1, 0, 0);
+            socket.send_to(&payload, &addr.into()).unwrap();
+        }
     }
-    // socket.close(None);
+    
 }
 
 fn main() {
-    //ws_test();
-    println!("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n>> :");
+    // ping("2a01:4f8:c012:f8e6:f1f9:1c6:32:0000");
+    
+    process_image("src/out.jpg");
 }
