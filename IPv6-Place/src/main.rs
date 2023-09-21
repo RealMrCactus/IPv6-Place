@@ -4,14 +4,14 @@ use std::net::Ipv6Addr;
 use image;
 use image::GenericImageView;
 use socket2::{Socket, Domain, Type, Protocol};
-use std::net::{SocketAddrV6};
+use std::net::SocketAddrV6;
 
 
 //const WS: &str    = "wss://ssi.place/ws";
 //let image: &str = "out.jpg";
 
-fn process_image(image: &str) {
-    let image = image::open("src/out.jpg").unwrap();
+fn process_image(_image: &str) {
+    let image = image::open(_image).unwrap();
     
     let socket = Socket::new(Domain::IPV6, Type::RAW, Some(Protocol::ICMPV6)).unwrap();
     let payload = [0; 8];
@@ -23,6 +23,7 @@ fn process_image(image: &str) {
                 (0x2 << 12) | x as u16, y as u16,
                 color[0] as u16, ((color[1] as u16) << 8) | color[2] as u16
             );
+            println!("Sending to {}", ip);
             let addr = SocketAddrV6::new(ip, 1, 0, 0);
             socket.send_to(&payload, &addr.into()).unwrap();
         }
