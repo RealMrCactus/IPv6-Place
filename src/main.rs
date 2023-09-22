@@ -24,7 +24,7 @@ fn build_addresses(image: &str) -> Vec<SocketAddrV6> {
             color[0] as u16,
             ((color[1] as u16) << 8) | color[2] as u16,
         );
-        let addr = SocketAddrV6::new(ip, 0, 0, 0);
+        let addr = SocketAddrV6::new(ip, 1, 0, 0);
         addrs.push(addr);
     }
     addrs
