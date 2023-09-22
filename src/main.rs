@@ -24,7 +24,7 @@ fn build_addresses(image: &str) -> Vec<SocketAddrV6> {
             color[0] as u16,
             ((color[1] as u16) << 8) | color[2] as u16,
         );
-        let addr = SocketAddrV6::new(ip, 1, 0, 0);
+        let addr = SocketAddrV6::new(ip, 0, 0, 0);
         addrs.push(addr);
     }
     addrs
@@ -33,11 +33,12 @@ fn build_addresses(image: &str) -> Vec<SocketAddrV6> {
 fn main() {
     let addr_list = build_addresses("out.png");
     let socket = Socket::new(Domain::IPV6, Type::RAW, Some(Protocol::ICMPV6)).unwrap();
-    let payload = [0x80];
+    let payload = [0x80, 0, 0, 0, 0, 0, 0, 0];
     let _ = socket.set_nonblocking(true);
     let _ = socket.set_send_buffer_size(usize::MAX);
     loop {
         for addr in addr_list.iter().cloned() {
+           // println!("{}",addr);
             socket.send_to(&payload, &addr.into()).unwrap();
         }
     

@@ -11,7 +11,4 @@ env_logger = "0.10.0"
 image = "0.24.7"
 pnet_packet = "0.34.0"
 socket2 = "0.5.4"
-surge-ping = "0.8.0"
 tokio = { version = "1.32.0", features = ["full"] }
-tungstenite = "0.20.0"
-url = "2.4.1" 
