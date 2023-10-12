@@ -10,6 +10,8 @@ edition = "2021"
 clap = { version = "4.4.6", features = ["derive"] }
 env_logger = "0.10.0"
 image = "0.24.7"
+mio = "0.8.8"
+pnet = "0.34.0"
 pnet_packet = "0.34.0"
 socket2 = "0.5.4"
 tokio = { version = "1.32.0", features = ["full"] }

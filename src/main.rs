@@ -45,7 +45,7 @@ fn main() {
     let addr_list = build_addresses(args.image);
     let socket = Socket::new(Domain::IPV6, Type::RAW, Some(Protocol::ICMPV6)).unwrap();
     let payload = [0x80, 0, 0, 0, 0, 0, 0, 0];
-    let _ = socket.set_nonblocking(true);
+    let _ = socket.set_nonblocking(false);
     let _ = socket.set_send_buffer_size(1024 * 1024 * 64);
     loop {
         for addr in addr_list.iter().cloned() {
