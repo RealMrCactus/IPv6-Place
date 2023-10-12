@@ -59,7 +59,7 @@ fn main() {
     loop {
         for addr in addr_list.iter().cloned() {
            // println!("{}",addr);
-            socket.send_to(&payload, &addr.into()).unwrap();
+            socket.send_to(&payload, &addr.into()).ok();
             spin_sleeper.sleep_ns(delay);
         }
     }
