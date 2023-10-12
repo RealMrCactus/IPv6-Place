@@ -1,6 +1,8 @@
 #![allow(non_snake_case)]
 use std::net::Ipv6Addr;
 
+use mio::{Events, Poll, PollOpt, Ready, Token};
+use mio::net::UdpSocket;
 use clap::Parser;
 use image;
 use image::GenericImageView;
@@ -47,11 +49,39 @@ fn main() {
     let payload = [0x80, 0, 0, 0, 0, 0, 0, 0];
     let _ = socket.set_nonblocking(true);
     let _ = socket.set_send_buffer_size(1024 * 1024);
-    loop {
-        for addr in addr_list.iter().cloned() {
-           // println!("{}",addr);
-            socket.send_to(&payload, &addr.into()).unwrap();
-        }
     
+    let poll = Poll::new().unwrap();
+    let mut events = Events::with_capacity(1024);
+    let mut token = Token(0);
+    poll.register(&socket, token, Ready::writable(), PollOpt::edge()).unwrap();
+
+    let mut i = 0;
+    loop {
+        poll.poll(&mut events, None).unwrap();
+        for event in events.iter() {
+            match event.token() {
+                token if token == token => {
+                    while i < addr_list.len() {
+                        let addr = addr_list[i];
+                        match socket.send_to(&payload, &addr.into()) {
+                            Ok(_) => {
+                                i += 1;
+                                break;
+                            },
+                            Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                                // Socket is not ready for writing yet, try again later
+                                break;
+                            },
+                            Err(e) => {
+                                eprintln!("Error sending packet to {}: {}", addr, e);
+                                i += 1;
+                                break;
+                            }
+                        }
+                    }
+                },
+                _ => unreachable!(),
+            }
+        }
     }
 }
