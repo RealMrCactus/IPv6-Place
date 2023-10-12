@@ -39,6 +39,7 @@ fn build_addresses(image: String) -> Vec<SocketAddrV6> {
 }
 
 fn main() {
+    std::env::set_var("RUST_BACKTRACE", "1");
     let args = Args::parse();
         
     let addr_list = build_addresses(args.image);
