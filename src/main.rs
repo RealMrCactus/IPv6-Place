@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 use std::net::Ipv6Addr;
-
+use std::time;
 use clap::Parser;
 use image;
 use image::GenericImageView;
@@ -51,6 +51,7 @@ fn main() {
         for addr in addr_list.iter().cloned() {
            // println!("{}",addr);
             socket.send_to(&payload, &addr.into()).unwrap();
+            std::thread::sleep(time::Duration::from_micros(1));
         }
     
     }
