@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 use std::net::Ipv6Addr;
 
+use clap::Parser;
 use image;
 use image::GenericImageView;
 use socket2::{Domain, Protocol, Socket, Type};
@@ -9,7 +10,14 @@ use std::net::SocketAddrV6;
 //const WS: &str    = "wss://ssi.place/ws";
 //let image: &str = "out.jpg";
 
-fn build_addresses(image: &str) -> Vec<SocketAddrV6> {
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    image: String
+}
+
+fn build_addresses(image: String) -> Vec<SocketAddrV6> {
     let mut addrs = Vec::new();
     let image = image::open(image).unwrap().into_rgb8();
     for (x, y, color) in image.enumerate_pixels() {
@@ -31,7 +39,9 @@ fn build_addresses(image: &str) -> Vec<SocketAddrV6> {
 }
 
 fn main() {
-    let addr_list = build_addresses("out.png");
+    let args = Args::parse();
+        
+    let addr_list = build_addresses(args.image);
     let socket = Socket::new(Domain::IPV6, Type::RAW, Some(Protocol::ICMPV6)).unwrap();
     let payload = [0x80, 0, 0, 0, 0, 0, 0, 0];
     let _ = socket.set_nonblocking(true);
