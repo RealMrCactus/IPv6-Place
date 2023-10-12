@@ -51,7 +51,7 @@ fn main() {
         for addr in addr_list.iter().cloned() {
            // println!("{}",addr);
             socket.send_to(&payload, &addr.into()).unwrap();
-            std::thread::sleep(time::Duration::from_micros(1));
+            std::thread::sleep(time::Duration::from_nanos(0.01));
         }
     
     }
